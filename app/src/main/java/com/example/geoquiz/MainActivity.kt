@@ -45,6 +45,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GeoQuizApp() {
+    val questions = listOf(
+        "Canberra is the capital of Australia.",
+        "The Pacific Ocean is larger than the Atlantic Ocean.",
+        "The Suez Canal connects the Red Sea and the Indian Ocean.",
+        "The source of the Nile River is in Egypt.",
+        "The Amazon River is the longest river in the Americas.",
+        "Lake Baikal is the world's oldest and deepest freshwater lake."
+    )
+
+    var currentQuestionIndex = 0
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -58,6 +69,17 @@ fun GeoQuizApp() {
             color = Color.White,
             fontSize = 22.sp,
             textAlign = TextAlign.Start
+        )
+
+        Text(
+            text = questions[currentQuestionIndex],
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            color = Color.DarkGray
         )
     }
 }
