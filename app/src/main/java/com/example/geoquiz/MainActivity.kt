@@ -5,21 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,12 +47,14 @@ fun GeoQuizApp() {
         "Lake Baikal is the world's oldest and deepest freshwater lake."
     )
 
-    var currentQuestionIndex = 0
+    var currentQuestionIndex by remember { mutableStateOf(0) }
+    var areAnswerButtonsVisible by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Заголовок
         Text(
             text = "GeoQuiz",
             modifier = Modifier
@@ -76,6 +67,7 @@ fun GeoQuizApp() {
             textAlign = TextAlign.Start
         )
 
+        // Вопрос
         Text(
             text = questions[currentQuestionIndex],
             modifier = Modifier
@@ -86,6 +78,8 @@ fun GeoQuizApp() {
             textAlign = TextAlign.Center,
             color = Color.DarkGray
         )
+
+        // Ряд с True / False / Next
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,39 +87,71 @@ fun GeoQuizApp() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // Кнопка True
-            Button(
-                onClick = { /* TODO: Обработка ответа True */ },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF7041D2)
-                ),
-                shape = RoundedCornerShape(6.dp)
-            ) {
-                Text(
-                    text = "TRUE",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+            if (areAnswerButtonsVisible) {
+                Button(
+                    onClick = { areAnswerButtonsVisible = false },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF7041D2)
+                    ),
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text("TRUE", color = Color.White, fontSize = 16.sp)
+                }
+            } else {
+                Spacer(modifier = Modifier.weight(1f).padding(end = 50.dp))
             }
 
-            // Кнопка False
-            Button(
-                onClick = { /* TODO: Обработка ответа False */ },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 60.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF7041D2)
-                ),
-                shape = RoundedCornerShape(6.dp)
+            // Колонка False + Next
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "FALSE",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+                if (areAnswerButtonsVisible) {
+                    Button(
+                        onClick = { areAnswerButtonsVisible = false },
+                        modifier = Modifier
+                            .padding(start = 50.dp, bottom = 16.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF7041D2)
+                        ),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text("FALSE", color = Color.White, fontSize = 16.sp)
+                    }
+                }
+
+                // Кнопка Next — показывается до последнего вопроса
+                // или на последнем вопросе до ответа
+                val isLastQuestion = currentQuestionIndex == questions.lastIndex
+                val shouldShowNext =
+                    (currentQuestionIndex < questions.lastIndex) ||
+                            (isLastQuestion && areAnswerButtonsVisible)
+
+                if (shouldShowNext) {
+                    Button(
+                        onClick = {
+                            if (!isLastQuestion) {
+                                currentQuestionIndex++
+                                areAnswerButtonsVisible = true
+                            }
+                        },
+                        enabled = !isLastQuestion || areAnswerButtonsVisible, // блокируем при ответе на последний
+                        modifier = Modifier
+                            .padding(start = 50.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF7041D2),
+                            disabledContainerColor = Color(0xFFBCA8E5)
+                        ),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text("NEXT  〉", color = Color.White, fontSize = 16.sp)
+                    }
+                }
             }
         }
     }
