@@ -54,7 +54,6 @@ fun GeoQuizApp() {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Заголовок
         Text(
             text = "GeoQuiz",
             modifier = Modifier
@@ -67,7 +66,6 @@ fun GeoQuizApp() {
             textAlign = TextAlign.Start
         )
 
-        // Вопрос
         Text(
             text = questions[currentQuestionIndex],
             modifier = Modifier
@@ -79,7 +77,6 @@ fun GeoQuizApp() {
             color = Color.DarkGray
         )
 
-        // Ряд с True / False / Next
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -104,7 +101,6 @@ fun GeoQuizApp() {
                 Spacer(modifier = Modifier.weight(1f).padding(end = 50.dp))
             }
 
-            // Колонка False + Next
             Column(
                 modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -124,8 +120,6 @@ fun GeoQuizApp() {
                     }
                 }
 
-                // Кнопка Next — показывается до последнего вопроса
-                // или на последнем вопросе до ответа
                 val isLastQuestion = currentQuestionIndex == questions.lastIndex
                 val shouldShowNext =
                     (currentQuestionIndex < questions.lastIndex) ||
